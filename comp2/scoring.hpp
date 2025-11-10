@@ -16,6 +16,8 @@
 
 #include "user.hpp"
 
+static constexpr int YEAR_DIFF_MAX = 2;
+
 enum class Crush {
     MUTUAL,
     ONE_WAY,
@@ -83,3 +85,6 @@ float calculate_score(
     float bio_score,
     float short_answer_score,
     float spotify_score);
+
+float bonus(const User& u1, const User& u2);
+
