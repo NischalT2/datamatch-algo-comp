@@ -1,7 +1,5 @@
 #include "scoring.hpp"
-
-
-static constexpr int YEAR_DIFF_MAX = 2; // max allowed difference in academic year
+#include <cmath>
 
 namespace {
     /// clamp_min(val, minval):
@@ -112,14 +110,44 @@ bool is_cheating(const User& u1, const User& u2, std::size_t nquestions,
 
 bool check_compatibility(const User& u1, const User& u2) {
     // TODO
-    return false;
+    if (u1.id == u2.id) return false;
+
+    if (u1.college != u2.college) return false;
+
+    MatchType mt = get_match_type(u1, u2);
+    if (mt == MatchType::NEITHER) return false;
+
+    Crush cru = get_crush_type(u1, u2);
+    if (cru == Crush::MUTUAL) return true;
+
+    if (std::abs(u1.year - u2.year) > YEAR_DIFF_MAX) return false;
+
+    if (u1.min_compatible_age && u1.min_compatible_age > u2.age) return false;
+    if (u1.max_compatible_age && u1.max_compatible_age < u2.age) return false;
+    if (u2.min_compatible_age && u2.min_compatible_age > u1.age) return false;
+    if (u2.max_compatible_age && u2.max_compatible_age < u1.age) return false;
+
+    if ((u1.no_house_matches || u2.no_house_matches) && u2.house == u1.house) return false;
+
+    for (const std::string& blocked_house : u1.blocked_houses) {
+        if (u2.house == blocked_house) return false;
+    }
+    for (const std::string& blocked_house : u2.blocked_houses) {
+        if (u1.house == blocked_house) return false;
+    }
+
+    return true;
 }
 
 /// bonus(u1, u2):
 ///    Implement this according to the README instructions.
 
 float bonus(const User& u1, const User& u2) {
-    // TODO
+    if (u1.ricepurity >= 0.0f && u2.ricepurity >= 0.0f) {
+        if (std::abs(u1.ricepurity - u2.ricepurity) <= 10.0f) {
+            return 0.5f;
+        }
+    }
     return 0.0f;
 }
 
