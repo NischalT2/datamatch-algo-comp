@@ -63,7 +63,7 @@ bool comparator(std::pair<size_t, long long>& a,
 static void create_user_from_json(
     const std::string uid, const json& private_info, const json& public_info,
     const std::string curr_college, const json& responses, const size_t nquestions,
-    std::vector<User>&   users, std::vector<std::string>& uids,
+    std::vector<User>& users, std::vector<std::string>& uids,
     std::vector<std::string>& emails, size_t num_options
 ) {
     Logger logger = Logger::instance();
