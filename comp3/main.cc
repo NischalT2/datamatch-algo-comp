@@ -375,8 +375,8 @@ int main(int argc, char** argv) {
                         weights[j][i] = -1.f;
                         
                         // disables matchtypes
-                        matchtypes[i][j] = -1.f;
-                        matchtypes[j][i] = -1.f;
+                        matchtypes[i][j] = -1;
+                        matchtypes[j][i] = -1;
                         
                         // ensures that no score compilation for this pair later 
                         scores[i][j] = -1.f;
