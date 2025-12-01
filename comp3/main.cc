@@ -63,7 +63,7 @@ bool comparator(std::pair<size_t, long long>& a,
 static void create_user_from_json(
     const std::string uid, const json& private_info, const json& public_info,
     const std::string curr_college, const json& responses, const size_t nquestions,
-    std::vector<User>& users, std::vector<std::string>& uids,
+    std::vector<User>&   users, std::vector<std::string>& uids,
     std::vector<std::string>& emails, size_t num_options
 ) {
     Logger logger = Logger::instance();
@@ -363,6 +363,30 @@ int main(int argc, char** argv) {
 
         /// TODO: Make noDormMatch logic here. You can make helper functions if
         /// you want.
+        logger.log(INFO, "Processing nodormmatch logic");
+        // when at student i, nested loop through the students after that student
+        for (size_t i = 0; i < tucount; ++i) {
+            for (size_t j = i + 1; j < tucount; ++j){
+                // if both users have inputted the same house and if either one of them have noDormMatch enabled
+                if (!users[i].house.empty() && !users[j].house.empty() &&
+                    (users[i].no_house_matches || users[j].no_house_matches) && users[i].house == users[j].house) {
+                        // disables weights
+                        weights[i][j] = -1.f;
+                        weights[j][i] = -1.f;
+                        
+                        // disables matchtypes
+                        matchtypes[i][j] = -1.f;
+                        matchtypes[j][i] = -1.f;
+                        
+                        // ensures that no score compilation for this pair later 
+                        scores[i][j] = -1.f;
+                        scores[j][i] = -1.f;
+
+                    }
+            }
+        }
+
+
 
         logger.log(INFO, "Computing scores");
         std::unordered_map<std::string, std::string> cross_schools; // empty
